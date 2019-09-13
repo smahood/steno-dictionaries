@@ -1,0 +1,12 @@
+{:deps  {org.clojure/clojure            {:mvn/version "1.10.1"}
+         org.clojure/data.json          {:mvn/version "0.2.6"}
+         org.clojure/data.priority-map  {:mvn/version "0.0.10"}
+         org.clojure/math.combinatorics {:mvn/version "0.1.4"}
+         }
+ :paths ["src" "resources"]
+ :aliases
+        {:rebl
+         {:extra-deps
+          {org.clojure/clojure    {:mvn/version "1.10.0"}
+           org.clojure/core.async {:mvn/version "0.4.500"}
+           com.cognitect/rebl     {:local/root "REBL-0.9.218.jar"}}}}}
