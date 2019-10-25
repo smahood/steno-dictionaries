@@ -1,0 +1,18 @@
+{
+"AOULT": "util",
+"AZ": ":as",
+"EPBGS": "export",
+"H*PLT": "html",
+"KR*S": "css",
+"R-R": "{#Return}{>}{^}",
+"SKWR-S": "js",
+"ST*R": "str",
+"TK-FPB": "defn",
+"TKAT": "datomic",
+"TKPWET/EUD": ".getElementById",
+"TKPWUG": "debug",
+"TP-G": "figwheel",
+"TP-G/H": "^:figwheel-hooks",
+"TP-PB": "fn",
+"TPH-S": "ns"
+}

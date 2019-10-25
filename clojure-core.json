@@ -1,0 +1,5 @@
+{
+"TKA/TOPL/EUBG": "datomic",
+"TKAT": "datomic",
+"TP-G": "figwheel"
+}

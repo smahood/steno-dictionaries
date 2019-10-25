@@ -4,6 +4,7 @@
 "R-F/-DZ": "rf/dispatch-sync",
 "R-F/-RS": "rf/reg-sub",
 "R-F/-S": "rf/subscribe",
+"R-F/K-S": "rf/clear-subscription-cache!",
 "R-F/R-F": "[re-frame.core :as rf]",
 "R-F/REF": "rf/reg-event-fx"
 }

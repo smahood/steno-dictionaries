@@ -4,7 +4,9 @@
             [stenojure.steno-order :as order]
             [stenojure.predicates :as pred]
             [clojure.set :as set]))
-(comment (spit "resources/norvig/common-words.txt" (slurp "http://norvig.com/google-books-common-words.txt")))
+(comment
+  (spit "resources/norvig/common-words.txt"
+        (slurp "http://norvig.com/google-books-common-words.txt")))
 
 
 (defn replace-numbers [stroke]
@@ -59,8 +61,7 @@
 
 
 (defn key-count [stroke freq]
-  {
-   :S- (if (str/includes? (:left stroke) "S") freq 0)
+  {:S- (if (str/includes? (:left stroke) "S") freq 0)
    :T- (if (str/includes? (:left stroke) "T") freq 0)
    :K- (if (str/includes? (:left stroke) "K") freq 0)
    :P- (if (str/includes? (:left stroke) "P") freq 0)
