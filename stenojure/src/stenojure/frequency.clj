@@ -3,10 +3,21 @@
             [clojure.string :as str]
             [stenojure.steno-order :as order]
             [stenojure.predicates :as pred]
-            [clojure.set :as set]))
-(comment
-  (spit "resources/norvig/common-words.txt"
-        (slurp "http://norvig.com/google-books-common-words.txt")))
+            [clojure.set :as set])
+  (:import (java.io FileNotFoundException)))
+
+
+(defn load-normalized-norvig-frequencies
+  ([]
+   (let [file (try (slurp "resources/norvig/common-words.txt")
+                   (catch FileNotFoundException e (slurp "http://norvig.com/google-books-common-words.txt")))]
+     (->> file
+          (str/split-lines)
+          (mapv str/lower-case)
+          (mapv #(str/split % #"\t"))
+          (mapv #(hash-map :word (first %)
+                           :frequency (int (/ (Double/parseDouble (last %)) 100005))))))))
+
 
 
 (defn replace-numbers [stroke]
@@ -22,6 +33,7 @@
                (str/replace "7" "P")
                (str/replace "8" "L")
                (str/replace "9" "T"))))
+
 
 
 (defn make-vowels [inner]

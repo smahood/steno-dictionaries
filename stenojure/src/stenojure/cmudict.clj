@@ -18,8 +18,10 @@
                     (mapv (fn [x] (phonetic/convert-to-ipa x)) (rest %))))))
 
 
-(defn load-cmudict [file-path]
-  (->> (slurp file-path)
+(defn load-cmudict []
+  (->> (slurp "resources/cmudict/cmudict-0.7b")
        str/split-lines
        (transduce cmudict-xf conj)
-       (apply merge-with concat)))
+       (apply merge-with concat)
+       (mapv #(hash-map :word (first %)
+                        :phonetic (into [] (distinct (last %)))))))
