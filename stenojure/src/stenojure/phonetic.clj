@@ -154,10 +154,11 @@
        (mapv str/join)))
 
 
-(defn ipa-phoneme-clusters [ipa-phonemes]
+(defn split-phoneme-clusters [ipa-phonemes]
   (->> ipa-phonemes
        (partition-by #(ipa-sounds %))
-       (map str/join)))
+       (map str/join)
+       (into [])))
 
 
 (defn convert-to-ipa [arpabet]

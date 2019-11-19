@@ -33,13 +33,44 @@
         (mapv #(hash-map :word (first %)
                          :separator (second %)) partitioned-word-seq)))))
 
+(defn make-vowels [inner]
+  (cond
+    (empty? inner) ""
+    (= "-" (first inner)) ""
+    :else (first inner)))
+
+
+(defn split-stroke [stroke]
+  (let [outer (str/split stroke #"\*|-|A|O|E|U")
+        inner (str/split (str/replace stroke #"\*" "") #"S|T|K|P|W|R|H|R|F|B|L|G|D|Z")
+        asterisk? (str/includes? stroke "*")
+        number? (str/includes? stroke "#")
+        symbols (cond
+                  (and asterisk? number? ) "#*"
+                  asterisk? "*"
+                  number? "#"
+                  :else "")
+        left (if (not (empty? (first outer)))
+               (first outer)
+               "")
+        right (if (< 1 (count outer))
+                (last outer)
+                "")
+        vowels (->> inner
+                    (remove #(empty? %))
+                    make-vowels)]
+    {:left      left
+     :vowels    vowels
+     :right     right
+     :symbols symbols}))
+
 
 (defn get-plover-dictionary [file-path]
   (->> (slurp file-path)
        (json/read-str)
        (map #(hash-map :stroke (str/split (replace-numbers (first %)) #"/")
                        :translation (last %)
-                       :words (split-words (last %))))))
+                       :words (split-words (str/lower-case (last %)))))))
 
 (defn group-by-word [ms]
   (-> (group-by :word ms)
@@ -63,4 +94,4 @@
 
 (defn combine-plover-cmu-freq-dictionaries [plover-dict cmu-dict freq-dict]
   (set/join (set/join cmu-dict freq-dict {:word :word})
-            (make-single-word-plover-dictionary plover-dict)))
+            (make-single-word-plover-dictionary plover-dict) {:word :word}))
