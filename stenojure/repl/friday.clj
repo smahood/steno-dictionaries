@@ -22,15 +22,25 @@
                        (set/join norvig-freq-dict {:word :word})))
 
 
+(->> combined-dict
+     (plover/filter-entries-containing-only-stroke-set #{:S- :T- :R-}))
+
+
+
+
+(->> [[#{:R-} #{}]]
+     (mapv #(filter (fn [x] (contains? x :R-)) %))
+
+     )
 
 
 (->> canonical/my-learned-definitions
      (mapv #(assoc % :orthographic-clusters (orthographic/split-clusters (:word %))
                      :phonetic-clusters (phonetic/split-phoneme-clusters (:canonical-phonetic %))
-                     :stroke-parts (mapv plover/split-stroke (:canonical-stroke %)))))
-
-
-
+                     :stroke-parts (mapv plover/split-stroke (:canonical-stroke %))))
+     #_(mapv #(str/join \tab [(:word %) (first (:canonical-stroke %))]))
+     #_(str/join \newline)
+     )
 
 
 
@@ -47,11 +57,10 @@
        (mapv #(set/rename-keys % {:word     :word
                                   :strokes  :canonical-stroke
                                   :phonetic :canonical-phonetic}))
-       (filter (str/starts-with? ""))
        (take 10)))
 
-#_(->> plover-main-dict
-       (filter #(#{"num"} (:translation %)))
-       #_(filter #(#{"UPB"} (first (:stroke %)))))
+(->> plover-main-dict
+     (filter #(#{"general"} (:translation %)))
+     #_(filter #(#{"UPB"} (first (:stroke %)))))
 
 #_(count canonical/my-learned-definitions)

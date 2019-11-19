@@ -6,6 +6,7 @@
             [medley.core :as medley]
             [stenojure.predicates :as pred]))
 
+
 (defn replace-numbers [stroke]
   (if (pred/includes-number? stroke)
     (str "#" (-> stroke
@@ -33,6 +34,7 @@
         (mapv #(hash-map :word (first %)
                          :separator (second %)) partitioned-word-seq)))))
 
+
 (defn make-vowels [inner]
   (cond
     (empty? inner) ""
@@ -46,7 +48,7 @@
         asterisk? (str/includes? stroke "*")
         number? (str/includes? stroke "#")
         symbols (cond
-                  (and asterisk? number? ) "#*"
+                  (and asterisk? number?) "#*"
                   asterisk? "*"
                   number? "#"
                   :else "")
@@ -59,18 +61,23 @@
         vowels (->> inner
                     (remove #(empty? %))
                     make-vowels)]
-    {:left      left
-     :vowels    vowels
-     :right     right
-     :symbols symbols}))
+    {:left       left
+     :vowels     vowels
+     :right      right
+     :symbols    symbols
+     :stroke-set (set/union (into #{} (mapv #(keyword (str % "-")) left))
+                            (into #{} (mapv #(keyword (str %)) vowels))
+                            (into #{} (mapv #(keyword (str "-" %)) right))
+                            (into #{} (mapv #(keyword (str %)) symbols)))}))
 
 
 (defn get-plover-dictionary [file-path]
   (->> (slurp file-path)
        (json/read-str)
-       (map #(hash-map :stroke (str/split (replace-numbers (first %)) #"/")
-                       :translation (last %)
-                       :words (split-words (str/lower-case (last %)))))))
+       (mapv #(hash-map :stroke (str/split (replace-numbers (first %)) #"/")
+                        :translation (last %)
+                        :words (split-words (str/lower-case (last %)))))
+       ))
 
 (defn group-by-word [ms]
   (-> (group-by :word ms)
@@ -78,6 +85,19 @@
         (m/scan [?id [{:strokes !s} ...]])
         {:word    ?id
          :strokes !s})))
+
+
+(defn filter-entries-containing-only-stroke-set [stroke-set combined-dict]
+  (->> combined-dict
+       (mapv #(assoc % :stroke-sets (mapv (fn [x]
+                                            (mapv (fn [y]
+                                                    (:stroke-set (split-stroke y)))
+                                                  x))
+                                          (:strokes %))))
+       (mapv #(assoc % :stroke-sets (mapv (fn [x] (apply set/union x)) (:stroke-sets %))))
+       (mapv #(assoc % :filtered-strokes (filter (fn [x] (set/superset? stroke-set x)) (:stroke-sets %))))
+       (filter #(not (empty? (:filtered-strokes %))))))
+
 
 
 (defn make-single-word-plover-dictionary [plover-dict]

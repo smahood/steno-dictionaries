@@ -57,7 +57,7 @@ and tied to meaningful rules where
     :canonical-stroke   ["PWEU"]
     :canonical-phonetic "baɪ"}
    {:word               "on"
-    :canonical-stroke   ["OB"]
+    :canonical-stroke   ["OPB"]
     :canonical-phonetic "ɑn"}
    {:word               "not"
     :canonical-stroke   ["TPHOT"]
